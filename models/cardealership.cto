@@ -1,0 +1,105 @@
+namespace org.example.carbuying
+
+enum CarColor{
+  o Red
+  o White
+  o Black
+  o Yelllow
+  o Grey
+}
+enum CarOrderState{
+  o CAR_BOOKED
+  o CAR_SOLD
+  o CAR_AVAILABLE
+}
+enum CarOrderStatus{
+  o ORDER_PENDING
+  o ORDER_READY
+  o ORDER_DISPATCH
+  o ORDER_DELIVERED
+  o ORDER_CANCELLED
+}
+
+abstract participant Person identified by personId {
+  o String personId
+  o String firstName
+  o String lastName
+}
+
+abstract participant Address {
+  o String streetAddress
+  o String city
+  o String stateProvince
+  o String postalCode
+}
+
+participant Customer identified by  customerId {
+  o Person person
+  o String customerId
+  o String email
+  o Address address
+}
+
+participant Admin identified by  adminId {
+  o Person person
+  o String adminId
+}
+
+
+
+asset Car identified by carId {
+  o String carId
+  o String make
+  o String model
+  o String color
+  o String transmission
+  o String Year
+  o Integer horsepower
+  o CarOrderState orderState default = "ORDER_PENDING"
+  o Customer customer
+}
+// Customer select cars based on Model
+transaction selectCarBasedOnModel {
+  o Car car
+}
+
+// Customer select cars Based on color
+transaction selectCarBasedOnColor {
+  o Car car
+}
+// Customer select cars Based on transmission
+transaction selectCarBasedTransmission {
+  o Car car
+}
+// Customer select cars Based on HP
+transaction selectCarBasedHorsePower {
+  o Car car
+}
+// Customer select cars Based on price
+transaction selectCarBasedOnPrice {
+  o Car car
+}
+// Customer can  order car
+transaction orderCar{
+  o Car car
+}
+// Customer or Admin can  cancel order
+transaction cancelOrder{
+  o Car car
+}
+//admin approve the order
+transaction approveOrder{
+  o Car car
+}
+// delivery org dispatch the order
+transaction despatchOrder{
+  o Car car
+}
+//customer can see order made by themselves where Deliver or can see their dispatch order. Admin can see all order status
+transaction CheckDeliveryStatus{
+  o Car car
+}
+//delivery org can deilver their owned order
+transaction deliverOrder{
+  o Car car
+}
