@@ -60,33 +60,38 @@ asset Car identified by carId {
   o String model
   o String Year
   o Double price
-  o Integer horsepower
+  o Integer horsePower
   o CarColor color
   o Transmission transmission
   o CarOrderState orderState default = "CAR_AVAILABLE"
   o Customer customer optional
   
 }
+// Customer select cars based on Make
+transaction selectCarBasedOnMake {
+  o String make
+}
+  
 // Customer select cars based on Model
 transaction selectCarBasedOnModel {
-  o Car car
+  o String model
 }
 
 // Customer select cars Based on color
 transaction selectCarBasedOnColor {
-  o Car car
+  o String color
 }
 // Customer select cars Based on transmission
 transaction selectCarBasedTransmission {
-  o Car car
+  o String transmission
 }
 // Customer select cars Based on HP
 transaction selectCarBasedHorsePower {
-  o Car car
+  o Integer horsePower
 }
 // Customer select cars Based on price
 transaction selectCarBasedOnPrice {
-  o Car car
+  o Double price
 }
 // Customer can  book a car
 transaction bookCar{
