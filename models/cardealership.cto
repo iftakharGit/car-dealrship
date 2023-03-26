@@ -1,11 +1,11 @@
-namespace org.example.carbuying
+namespace com.iftakhar.dealership
 
 enum CarColor{
-  o Red
-  o White
-  o Black
-  o Yelllow
-  o Grey
+  o COLOR_RED
+  o COLOR_WHITE
+  o COLOR_BLACK
+  o COLOR_YELLOW
+  o COLOR_GREY
 }
 enum CarOrderState{
   o CAR_BOOKED
@@ -20,29 +20,36 @@ enum CarOrderStatus{
   o ORDER_CANCELLED
 }
 
-abstract participant Person identified by personId {
-  o String personId
-  o String firstName
-  o String lastName
+enum Transmission {
+  o TRANSMISSION_MANUAL
+  o TRANSMISSION_AUTOMATIC
 }
 
-abstract participant Address {
+ concept Address {
   o String streetAddress
   o String city
   o String stateProvince
   o String postalCode
 }
 
-participant Customer identified by  customerId {
-  o Person person
+participant Customer identified by customerId{
   o String customerId
+  o String firstName
+  o String lastName
   o String email
   o Address address
 }
 
-participant Admin identified by  adminId {
-  o Person person
-  o String adminId
+participant Dealer identified by dealerId{
+  o String dealerId
+  o String name
+  o Address address
+}
+
+participant LogisticCompany identified by logisticsCompanyId{
+  o String logisticsCompanyId
+  o String name
+  o Address address
 }
 
 
@@ -51,12 +58,14 @@ asset Car identified by carId {
   o String carId
   o String make
   o String model
-  o String color
-  o String transmission
   o String Year
+  o Double price
   o Integer horsepower
-  o CarOrderState orderState default = "ORDER_PENDING"
-  o Customer customer
+  o CarColor color
+  o Transmission transmission
+  o CarOrderState orderState default = "CAR_AVAILABLE"
+  o Customer customer optional
+  
 }
 // Customer select cars based on Model
 transaction selectCarBasedOnModel {
@@ -79,27 +88,47 @@ transaction selectCarBasedHorsePower {
 transaction selectCarBasedOnPrice {
   o Car car
 }
-// Customer can  order car
-transaction orderCar{
-  o Car car
+// Customer can  book a car
+transaction bookCar{
+  --> Car car
+  --> Customer customer
 }
 // Customer or Admin can  cancel order
 transaction cancelOrder{
-  o Car car
+  --> Car car
+  --> Customer customer
 }
 //admin approve the order
 transaction approveOrder{
-  o Car car
+  --> Car car
+  --> Dealer dealer
 }
 // delivery org dispatch the order
-transaction despatchOrder{
-  o Car car
+transaction dispatchOrder{
+  --> Car car
+  --> LogisticCompany logisticCompany
 }
-//customer can see order made by themselves where Deliver or can see their dispatch order. Admin can see all order status
-transaction CheckDeliveryStatus{
-  o Car car
+//customer can see order made by themselves where Delivery org can see their dispatch order only. Admin can see all order status
+transaction checkDeliveryStatus{
+  --> Car car
+  --> Customer customer
+  --> Dealer dealer
+  --> LogisticCompany logisticCompany
+
 }
-//delivery org can deilver their owned order
+//delivery org can deilver order
 transaction deliverOrder{
-  o Car car
+  --> Car car
+  --> LogisticCompany logisticCompany
+}
+
+asset Order identified by orderId {
+  o String orderId
+  o Double amount
+  o DateTime date
+  o CarOrderStatus status
+  --> Car car
+  --> Customer customer
+  --> Dealer dealer optional
+  --> LogisticCompany logisticCompany optional
 }
