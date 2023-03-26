@@ -38,6 +38,20 @@ query getOrdersByDealerId {
       WHERE (dealer.dealerId == _$dealerId)
 }
 
+query getOrderByOrderId {
+  description: "get order for a orderId"
+  statement: 
+      SELECT com.iftakhar.dealership.Order
+      WHERE (orderId == _$orderId)
+}
+
+query getLogisticCompanyByLogisticCompanyId {
+  description: "get Logistic company from logisticId"
+  statement: 
+      SELECT com.iftakhar.dealership.LogisticCompany
+      WHERE (logisticsCompanyId == _$logisticsCompanyId)
+}
+
 query getOrdersByLogisticsCompanyId {
   description: "Get all orders for a logistics company"
   statement: 

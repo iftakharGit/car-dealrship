@@ -1,3 +1,127 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+* Dealer Rules:
+* Dealer can see all cars, customers, orders and logistic companies
+*/
+rule dealerViewAllOrder{
+  description: "Dealer allow to see all order"
+  participant: "com.iftakhar.dealership.Dealer"
+  operation: ALL
+  resource: "com.iftakhar.dealership.Order"
+  action: ALLOW
+}
+
+rule dealerViewAllCars{
+  description: "Dealer allow to see all cars"
+  participant: "com.iftakhar.dealership.Dealer"
+  operation: ALL
+  resource: "com.iftakhar.dealership.Car"
+  action: ALLOW
+}
+
+rule dealerViewThemselves{
+  description: "Dealer allow to see themselves"
+  participant(p): "com.iftakhar.dealership.Dealer"
+  operation: ALL
+  resource(r): "com.iftakhar.dealership.Dealer"
+  condition: (p.getIdentifier()==r.getIdentifier())
+  action: ALLOW
+}
+
+rule dealerViewAllCustomer{
+  description: "Customer allow to see all customer"
+  participant: "com.iftakhar.dealership.Dealer"
+  operation: ALL
+  resource: "com.iftakhar.dealership.Customer"
+  action: ALLOW
+}
+
+rule dealerViewAllLogisticCompany{
+  description: "Customer allow to see all logistic company"
+  participant: "com.iftakhar.dealership.Dealer"
+  operation: ALL
+  resource: "com.iftakhar.dealership.LogisticCompany"
+  action: ALLOW
+}
+
+/*
+* Logistic companies rules:
+* Dealer can see their shipment order and themselves
+*/
+rule logisticComViewTheirShipment{
+  description: "Logistic companies allow to see only thier shipment"
+  participant(p): "com.iftakhar.dealership.LogisticCompany"
+  operation: READ
+  resource(r): "com.iftakhar.dealership.Order"
+  condition: (p.getIdentifier()==r.logisticCompany.getIdentifier())
+  action: ALLOW
+}
+
+rule logisticComViewThemselves{
+  description: "Logistic companies allow to see only themselves"
+  participant(p): "com.iftakhar.dealership.LogisticCompany"
+  operation: READ
+  resource(r): "com.iftakhar.dealership.LogisticCompany"
+  condition: (p.getIdentifier()==r.getIdentifier())
+  action: ALLOW
+}
+
+/*
+* Customer Rules:
+* Customer can see all cars, their owned orders
+*/
+rule customerCanSeeAllCarsWhichIsNotSold{
+  description: "Customer allow to see only their own order"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: READ
+  resource(r): "com.iftakhar.dealership.Car"
+  condition: (r.orderState == "CAR_AVAILABLE")
+  action: ALLOW
+}
+
+rule customerCanViewOwnOrder{
+  description: "Customer allow to see only their own order"
+  participant(p): "com.iftakhar.dealership.Customer"
+  operation: READ
+  resource(r): "com.iftakhar.dealership.Order"
+  condition: (p.getIdentifier()==r.customer.getIdentifier())
+  action: ALLOW
+}
+
+rule customerCanViewThemselves{
+  description: "Customer allow to see only their own order"
+  participant(p): "com.iftakhar.dealership.Customer"
+  operation: READ
+  resource(r): "com.iftakhar.dealership.Customer"
+  condition: (p.getIdentifier()==r.getIdentifier())
+  action: ALLOW
+}
+
+/*
+* System Rules:
+* DO NOT TOUCH
+*/
+
+rule SystemACL {
+    description: "System ACL to permit all access"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
 rule NetworkAdminUser {
     description: "Grant business network administrators full access to user resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"

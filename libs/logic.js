@@ -122,3 +122,31 @@ async function bookCar(book) {
   const orderRegistry = await getAssetRegistry("com.iftakhar.dealership.Order");
   await orderRegistry.add(order)
 }
+
+/* 
+* @param {com.iftakhar.dealership.approveOrder} tx 
+* @transaction
+*/
+async function approveOrder(tx) {
+  let order = tx.order;
+  let logisticsCompanyId = tx.logisticsCompanyId;
+  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Order");
+  let getOrder = await query('getOrderByOrderId', { orderId: order.orderId });
+  let getLogisticCompany = await query('getLogisticCompanyByLogisticCompanyId', { logisticsCompanyId: logisticsCompanyId });
+  console.log(getLogisticCompany);
+  if (getOrder.length > 0) {
+    if (getLogisticCompany.length > 0) {
+      getLogisticCompany.forEach(logisticCompany =>
+        order.logisticCompany = logisticCompany);
+      order.status = "ORDER_READY";
+      console.log("before asset update")
+      await assetRegistry.update(order);
+      console.log("after asset update")
+    } else {
+      throw new Error('logisticId is invalid');
+    }
+
+  } else {
+    throw new Error('OrderId is invalid');
+  }
+}

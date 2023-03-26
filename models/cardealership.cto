@@ -105,8 +105,8 @@ transaction cancelOrder{
 }
 //admin approve the order
 transaction approveOrder{
-  --> Car car
-  --> Dealer dealer
+  --> Order order
+  o String logisticsCompanyId
 }
 // delivery org dispatch the order
 transaction dispatchOrder{
