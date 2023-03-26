@@ -1,46 +1,46 @@
 
-query GetCarBasedOnMake{
+query getCarBasedOnMake{
   description: "get car based on make"
   statement: SELECT com.iftakhar.dealership.Car WHERE (make ==_$make)
 }
-query GetCarBasedOnModel{
+
+query getCarBasedOnModel{
   description: "get car based on model"
   statement: SELECT com.iftakhar.dealership.Car WHERE (model ==_$model)
 }
-query GetCarBasedOnColor{
+
+query getCarBasedOnColor{
   description: "get car based on color"
   statement: SELECT com.iftakhar.dealership.Car WHERE (color ==_$color)
 }
-query GetCarBasedOnTransmission{
+
+query getCarBasedOnTransmission{
   description: "get car based on transmission"
   statement: SELECT com.iftakhar.dealership.Car WHERE (transmission ==_$transmission)
 }
-query GetCarBasedOnPrice{
+
+query getCarBasedOnPrice{
   description: "get car based on price"
   statement: SELECT com.iftakhar.dealership.Car WHERE (price ==_$price)
 }
 
-
-query GetOrdersByCustomerId {
+query getOrdersByCustomerId {
   description: "Get all orders for a customer"
   statement: 
       SELECT com.iftakhar.dealership.Order
       WHERE (customer.customerId == _$customerId)
 }
 
-query GetOrdersByDealerId {
+query getOrdersByDealerId {
   description: "Get all orders for a dealer"
   statement: 
       SELECT com.iftakhar.dealership.Order
       WHERE (dealer.dealerId == _$dealerId)
 }
 
-query GetOrdersByLogisticsCompanyId {
+query getOrdersByLogisticsCompanyId {
   description: "Get all orders for a logistics company"
   statement: 
       SELECT com.iftakhar.dealership.Order
       WHERE (logisticCompany.logisticsCompanyId == _$logisticsCompanyId)
 }
-
-
-
