@@ -110,8 +110,7 @@ transaction approveOrder{
 }
 // delivery org dispatch the order
 transaction dispatchOrder{
-  --> Car car
-  --> LogisticCompany logisticCompany
+  --> Order order
 }
 //customer can see order made by themselves where Delivery org can see their dispatch order only. Admin can see all order status
 transaction checkDeliveryStatus{

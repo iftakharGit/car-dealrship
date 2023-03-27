@@ -6,8 +6,6 @@
 
 async function getCarBasedOnModel(tx) {
   let model = tx.model;
-  console.log(model);
-  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Car");
   let allCar = await query('getCarBasedOnModel', { model: model });
   if (allCar.length > 0) {
     console.log(queryResult);
@@ -25,8 +23,6 @@ async function getCarBasedOnModel(tx) {
 
 async function getCarBasedOnMake(tx) {
   let make = tx.make;
-  console.log(make);
-  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Car");
   let allCar = await query('getCarBasedOnMake', { make: make });
   if (allCar.length > 0) {
     console.log(allCar);
@@ -44,8 +40,6 @@ async function getCarBasedOnMake(tx) {
 
 async function getCarBasedOnColor(tx) {
   let color = tx.color;
-  console.log(color);
-  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Car");
   let allCar = await query('getCarBasedOnColor', { color: color });
   if (allCar.length > 0) {
     console.log(allCar);
@@ -63,8 +57,6 @@ async function getCarBasedOnColor(tx) {
 
 async function getCarBasedTransmission(tx) {
   let transmission = tx.transmission;
-  console.log(transmission);
-  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Car");
   let allCar = await query('getCarBasedOnTransmission', { transmission: transmission });
   if (allCar.length > 0) {
     console.log(allCar);
@@ -82,8 +74,6 @@ async function getCarBasedTransmission(tx) {
 
 async function getCarBasedOnPrice(tx) {
   let price = tx.price;
-  console.log(price);
-  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Car");
   let allCar = await query('getCarBasedOnPrice', { price: price });
   if (allCar.length > 0) {
     console.log(allCar);
@@ -101,7 +91,7 @@ async function bookCar(book) {
   const { customer, car } = book;
   console.log(book)
 
-  if (car.customer && car.orderState != 'CAR_AVAILABLE') {
+  if (car.customer && car.orderState !== 'CAR_AVAILABLE') {
     throw new Error("Car is already sold");
   }
 
@@ -149,4 +139,15 @@ async function approveOrder(tx) {
   } else {
     throw new Error('OrderId is invalid');
   }
+}
+
+/* 
+* @param {com.iftakhar.dealership.dispatchOrder} tx 
+* @transaction
+*/
+async function dispatchOrder(tx) {
+  let order = tx.order;
+  const assetRegistry = await getAssetRegistry("com.iftakhar.dealership.Order");
+  order.status = "ORDER_DISPATCH";
+  await assetRegistry.update(order);
 }

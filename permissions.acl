@@ -16,7 +16,16 @@
 * Dealer Rules:
 * Dealer can see all cars, customers, orders and logistic companies
 */
-rule dealerViewAllOrder{
+
+rule allowDealerApproveOrder{
+  description: "Dealer allow to see all order"
+  participant: "com.iftakhar.dealership.Dealer"
+  operation: ALL
+  resource: "com.iftakhar.dealership.approveOrder"
+  action: ALLOW
+}
+
+rule allowDealerViewAllOrder{
   description: "Dealer allow to see all order"
   participant: "com.iftakhar.dealership.Dealer"
   operation: ALL
@@ -24,7 +33,7 @@ rule dealerViewAllOrder{
   action: ALLOW
 }
 
-rule dealerViewAllCars{
+rule allowDealerViewAllCars{
   description: "Dealer allow to see all cars"
   participant: "com.iftakhar.dealership.Dealer"
   operation: ALL
@@ -32,7 +41,7 @@ rule dealerViewAllCars{
   action: ALLOW
 }
 
-rule dealerViewThemselves{
+rule allowDealerViewThemselves{
   description: "Dealer allow to see themselves"
   participant(p): "com.iftakhar.dealership.Dealer"
   operation: ALL
@@ -41,7 +50,7 @@ rule dealerViewThemselves{
   action: ALLOW
 }
 
-rule dealerViewAllCustomer{
+rule allowDealerViewAllCustomer{
   description: "Customer allow to see all customer"
   participant: "com.iftakhar.dealership.Dealer"
   operation: ALL
@@ -49,7 +58,7 @@ rule dealerViewAllCustomer{
   action: ALLOW
 }
 
-rule dealerViewAllLogisticCompany{
+rule allowDealerViewAllLogisticCompany{
   description: "Customer allow to see all logistic company"
   participant: "com.iftakhar.dealership.Dealer"
   operation: ALL
@@ -64,17 +73,25 @@ rule dealerViewAllLogisticCompany{
 rule logisticComViewTheirShipment{
   description: "Logistic companies allow to see only thier shipment"
   participant(p): "com.iftakhar.dealership.LogisticCompany"
-  operation: READ
+  operation: READ,UPDATE
   resource(r): "com.iftakhar.dealership.Order"
   condition: (p.getIdentifier()==r.logisticCompany.getIdentifier())
   action: ALLOW
 }
 
-rule logisticComViewThemselves{
+rule allowLogisticComDispatchOrder{
+  description: "Logistic companies allow to see only themselves"
+  participant: "com.iftakhar.dealership.LogisticCompany"
+  operation: ALL
+  resource: "com.iftakhar.dealership.dispatchOrder"
+  action: ALLOW
+}
+
+rule allowLogisticComViewThemselves{
   description: "Logistic companies allow to see only themselves"
   participant(p): "com.iftakhar.dealership.LogisticCompany"
   operation: READ
-  resource(r): "com.iftakhar.dealership.LogisticCompany"
+  resource(r): "com.iftakhar.dealership.Order"
   condition: (p.getIdentifier()==r.getIdentifier())
   action: ALLOW
 }
@@ -83,16 +100,16 @@ rule logisticComViewThemselves{
 * Customer Rules:
 * Customer can see all cars, their owned orders
 */
-rule customerCanSeeAllCarsWhichIsNotSold{
+rule allowCustomerAllAvailableCars{
   description: "Customer allow to see only their own order"
   participant: "com.iftakhar.dealership.Customer"
-  operation: READ
+  operation: READ, UPDATE
   resource(r): "com.iftakhar.dealership.Car"
   condition: (r.orderState == "CAR_AVAILABLE")
   action: ALLOW
 }
 
-rule customerCanViewOwnOrder{
+rule allowCustomerViewOwnOrder{
   description: "Customer allow to see only their own order"
   participant(p): "com.iftakhar.dealership.Customer"
   operation: READ
@@ -101,12 +118,27 @@ rule customerCanViewOwnOrder{
   action: ALLOW
 }
 
-rule customerCanViewThemselves{
+rule allowCustomerViewThemselves{
   description: "Customer allow to see only their own order"
   participant(p): "com.iftakhar.dealership.Customer"
   operation: READ
   resource(r): "com.iftakhar.dealership.Customer"
   condition: (p.getIdentifier()==r.getIdentifier())
+  action: ALLOW
+}
+
+rule allowCustomerBookCar{
+  description: "Customer allow to book order"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.bookCar"
+  action: ALLOW
+}
+rule customerAllowTCreateOrder{
+  description: "Customer allow to book order"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.Order"
   action: ALLOW
 }
 
