@@ -81,7 +81,7 @@ asset Order identified by orderId {
   o String orderId
   o Double amount
   o DateTime date
-  o CarStatus status
+  o OrderStatus status
   --> Car car
   --> Customer customer
   --> Dealer dealer optional

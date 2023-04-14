@@ -298,7 +298,7 @@ async function initialiseAll() {
   let carIDs = ['1000', '2000'];
   let makes = ['Mercedes Benz', 'BMW']
   let models = ['C-Class', 'X5'];
-  let Years = [2022, 2023];
+  let years = ['2022', '2023'];
   let prices = [50000, 60000];
   let horsePowers = [375, 460];
   let colors = ['COLOR_WHITE', 'COLOR_RED'];
@@ -325,7 +325,7 @@ async function initialiseAll() {
 
     newCar.make = makes[i];
     newCar.model = models[i];
-    newCar.Year = models[i];
+    newCar.Year = years[i];
     newCar.price = prices[i];
     newCar.horsePower = horsePowers[i];
     newCar.color = colors[i];
