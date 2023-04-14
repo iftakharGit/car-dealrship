@@ -1,24 +1,10 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
 * Dealer Rules:
 * Dealer can see all cars, customers, orders and logistic companies
 */
 
 rule allowDealerApproveOrder{
-  description: "Dealer allow to see all order"
+  description: "Dealer allow to approve order"
   participant: "com.iftakhar.dealership.Dealer"
   operation: ALL
   resource: "com.iftakhar.dealership.approveOrder"
@@ -75,37 +61,52 @@ rule logisticComViewTheirShipment{
   participant(p): "com.iftakhar.dealership.LogisticCompany"
   operation: READ,UPDATE
   resource(r): "com.iftakhar.dealership.Order"
-  condition: (p.getIdentifier()==r.logisticCompany.getIdentifier())
+  condition: (p.getIdentifier() == r.logisticCompany.getIdentifier())
   action: ALLOW
 }
 
 rule allowLogisticComDispatchOrder{
-  description: "Logistic companies allow to see only themselves"
+  description: "Allow logistic companies to dispatch assigned order"
   participant: "com.iftakhar.dealership.LogisticCompany"
   operation: ALL
   resource: "com.iftakhar.dealership.dispatchOrder"
   action: ALLOW
 }
 
-rule allowLogisticComViewThemselves{
+rule allowLogisticComDeliverOrder{
+  description: "Logistic companies allow to deliver assigned order"
+  participant: "com.iftakhar.dealership.LogisticCompany"
+  operation: ALL
+  resource: "com.iftakhar.dealership.deliverOrder"
+  action: ALLOW
+}
+
+rule allowLogisticComToViewAssignedOrder{
   description: "Logistic companies allow to see only themselves"
   participant(p): "com.iftakhar.dealership.LogisticCompany"
   operation: READ
   resource(r): "com.iftakhar.dealership.Order"
-  condition: (p.getIdentifier()==r.getIdentifier())
+  condition: (p.getIdentifier() == r.getIdentifier())
   action: ALLOW
 }
-
+rule allowLogisticComViewThemselves{
+  description: "Logistic companies allow to see only themselves"
+  participant(p): "com.iftakhar.dealership.LogisticCompany"
+  operation: READ
+  resource(r): "com.iftakhar.dealership.LogisticCompany"
+  condition: (p.getIdentifier() == r.getIdentifier())
+  action: ALLOW
+}
 /*
 * Customer Rules:
 * Customer can see all cars, their owned orders
 */
 rule allowCustomerAllAvailableCars{
   description: "Customer allow to see only their own order"
-  participant: "com.iftakhar.dealership.Customer"
+  participant(p): "com.iftakhar.dealership.Customer"
   operation: READ, UPDATE
   resource(r): "com.iftakhar.dealership.Car"
-  condition: (r.orderState == "CAR_AVAILABLE")
+  condition: (r.orderState == "CAR_AVAILABLE" || (r.orderState == "CAR_SOLD" && r.customer.customerId == p.customerId))
   action: ALLOW
 }
 
@@ -114,7 +115,7 @@ rule allowCustomerViewOwnOrder{
   participant(p): "com.iftakhar.dealership.Customer"
   operation: READ
   resource(r): "com.iftakhar.dealership.Order"
-  condition: (p.getIdentifier()==r.customer.getIdentifier())
+  condition: (p.getIdentifier() == r.customer.getIdentifier())
   action: ALLOW
 }
 
@@ -123,7 +124,7 @@ rule allowCustomerViewThemselves{
   participant(p): "com.iftakhar.dealership.Customer"
   operation: READ
   resource(r): "com.iftakhar.dealership.Customer"
-  condition: (p.getIdentifier()==r.getIdentifier())
+  condition: (p.getIdentifier() == r.getIdentifier())
   action: ALLOW
 }
 
@@ -134,11 +135,55 @@ rule allowCustomerBookCar{
   resource: "com.iftakhar.dealership.bookCar"
   action: ALLOW
 }
+
+rule allowCustomerToViewCarBasedOnColor{
+  description: "Customer allow to view car based on color"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.selectCarBasedOnColor"
+  action: ALLOW
+}
+rule allowCustomerToViewCarBasedOnPrice{
+  description: "Customer allow to view car based on price"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.selectCarBasedOnPrice"
+  action: ALLOW
+}
+rule allowCustomerToViewCarBasedOnHorsePower{
+  description: "Customer allow to view car based on horse power"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.selectCarBasedHorsePower"
+  action: ALLOW
+}
+rule allowCustomerToViewCarBasedOnModel{
+  description: "Customer allow to view car based on model"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.selectCarBasedOnModel"
+  action: ALLOW
+}
+rule allowCustomerToViewCarBasedOnMake{
+  description: "Customer allow to view car based on make"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.selectCarBasedOnMake"
+  action: ALLOW
+}
 rule customerAllowTCreateOrder{
   description: "Customer allow to book order"
   participant: "com.iftakhar.dealership.Customer"
   operation: CREATE
   resource: "com.iftakhar.dealership.Order"
+  action: ALLOW
+}
+
+rule customerAllowToCancelOrder{
+  description: "Customer allow to cancel order"
+  participant: "com.iftakhar.dealership.Customer"
+  operation: CREATE
+  resource: "com.iftakhar.dealership.cancelOrder"
   action: ALLOW
 }
 

@@ -1,3 +1,7 @@
+query getCarBasedOnCarId{
+  description: "get car based on carId"
+  statement: SELECT com.iftakhar.dealership.Car WHERE (carId ==_$carId)
+}
 
 query getCarBasedOnMake{
   description: "get car based on make"
@@ -13,6 +17,12 @@ query getCarBasedOnColor{
   description: "get car based on color"
   statement: SELECT com.iftakhar.dealership.Car WHERE (color ==_$color)
 }
+
+query getCarBasedOnHorsePower{
+  description: "get car based on horse power"
+  statement: SELECT com.iftakhar.dealership.Car WHERE (horsePower ==_$horsePower)
+}
+
 
 query getCarBasedOnTransmission{
   description: "get car based on transmission"

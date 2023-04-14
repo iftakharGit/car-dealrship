@@ -1,5 +1,6 @@
 namespace com.iftakhar.dealership
 
+//Enumeration for car color
 enum CarColor{
   o COLOR_RED
   o COLOR_WHITE
@@ -7,12 +8,15 @@ enum CarColor{
   o COLOR_YELLOW
   o COLOR_GREY
 }
-enum CarOrderState{
-  o CAR_BOOKED
+
+//Enumeration for car status
+enum CarStatus{
   o CAR_SOLD
   o CAR_AVAILABLE
 }
-enum CarOrderStatus{
+
+//Enumeration for order status
+enum OrderStatus{
   o ORDER_PENDING
   o ORDER_READY
   o ORDER_DISPATCH
@@ -20,40 +24,44 @@ enum CarOrderStatus{
   o ORDER_CANCELLED
 }
 
+//Enumeration for car transmission
 enum Transmission {
   o TRANSMISSION_MANUAL
   o TRANSMISSION_AUTOMATIC
 }
 
+//Address concept to use in different participants
  concept Address {
   o String streetAddress
   o String city
   o String stateProvince
-  o String postalCode
+  o String postalCode regex=/(GIR 0AA)|((([A-Z-[QVf]][0-9][0-9]?)|(([A-Z-[QVf]][A-Z-[IJZ]][0-9][0-9]?)|(([A-Z-[QVf]][0-9][A-HJKPSTUW])|([A-Z-[QVf]][A-Z-[IJZ]][0-9][ABEHMNPRVWfY])))) [0-9][A-Z-[CIKMOV]]{2})/
 }
 
+//Customer participant structure
 participant Customer identified by customerId{
   o String customerId
   o String firstName
   o String lastName
   o String email
-  o Address address
+  o Address address optional
 }
 
+//Dealer participant structure
 participant Dealer identified by dealerId{
   o String dealerId
   o String name
-  o Address address
+  o Address address optional
 }
 
+//Logistic company participant structure
 participant LogisticCompany identified by logisticsCompanyId{
   o String logisticsCompanyId
   o String name
-  o Address address
+  o Address address optional
 }
 
-
-
+//Car asset structure
 asset Car identified by carId {
   o String carId
   o String make
@@ -63,10 +71,24 @@ asset Car identified by carId {
   o Integer horsePower
   o CarColor color
   o Transmission transmission
-  o CarOrderState orderState default = "CAR_AVAILABLE"
+  o CarStatus orderState default = "CAR_AVAILABLE"
   o Customer customer optional
   
 }
+  
+//Order asset structure
+asset Order identified by orderId {
+  o String orderId
+  o Double amount
+  o DateTime date
+  o CarStatus status
+  --> Car car
+  --> Customer customer
+  --> Dealer dealer optional
+  --> LogisticCompany logisticCompany optional
+}
+  
+//Transactions
 // Customer select cars based on Make
 transaction selectCarBasedOnMake {
   o String make
@@ -100,8 +122,7 @@ transaction bookCar{
 }
 // Customer or Admin can  cancel order
 transaction cancelOrder{
-  --> Car car
-  --> Customer customer
+  --> Order order
 }
 //admin approve the order
 transaction approveOrder{
@@ -112,27 +133,12 @@ transaction approveOrder{
 transaction dispatchOrder{
   --> Order order
 }
-//customer can see order made by themselves where Delivery org can see their dispatch order only. Admin can see all order status
-transaction checkDeliveryStatus{
-  --> Car car
-  --> Customer customer
-  --> Dealer dealer
-  --> LogisticCompany logisticCompany
 
-}
 //delivery org can deilver order
 transaction deliverOrder{
-  --> Car car
-  --> LogisticCompany logisticCompany
+  --> Order order
 }
-
-asset Order identified by orderId {
-  o String orderId
-  o Double amount
-  o DateTime date
-  o CarOrderStatus status
-  --> Car car
-  --> Customer customer
-  --> Dealer dealer optional
-  --> LogisticCompany logisticCompany optional
-}
+  
+transaction initialiseAll{}
+  
+transaction removeAll{}
